@@ -92,6 +92,12 @@ public class ItemServiceImpl implements ItemService {
         return new ResultMessage(200, "아이템이 삭제되었습니다.");
     }
 
+    // 고유 값으로 특정 상품 조회
+    @Override
+    public Item findByUniqueValue(String uniqueValue) {
+        return itemRepository.findByUniqueValue(uniqueValue).orElse(null);
+    }
+
     // 모든 상품 조회
     @Override
     public List<Item> findAllItems() {

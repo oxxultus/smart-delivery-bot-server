@@ -16,6 +16,9 @@ public interface ItemService {
     // 상품 삭제
     ResultMessage deleteItem(String uniqueValue);
 
+    // 고유 값으로 특정 상품 조회
+    Item findByUniqueValue(String uniqueValue);
+
     // 모든 상품 정보
     List<Item> findAllItems();
 }
