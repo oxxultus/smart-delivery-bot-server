@@ -9,8 +9,10 @@ import java.util.*;
 @Table(name = "USERS")
 public class User {
 
+    // 일반 컬럼을 설정하기 위한 부분 ⬇ =================================================
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -23,9 +25,11 @@ public class User {
     @Column(name = "PASSWORD", nullable = true)
     private String password;
 
-    @OneToOne(mappedBy = "user")
+    // 연관관계를 설정하기 위한 부분 ⬇ ==================================================
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CartList cartlist;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
     private List<PaymentList> paymentlist = new ArrayList<>();
 }

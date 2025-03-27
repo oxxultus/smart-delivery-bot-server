@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 @Table(name = "ITEMS")
 public class Item {
 
+    // 일반 컬럼을 설정하기 위한 부분 ⬇ =================================================
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "NAME")
