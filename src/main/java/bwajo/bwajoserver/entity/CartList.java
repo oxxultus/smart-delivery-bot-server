@@ -16,11 +16,28 @@ public class CartList {
 
     // 연관관계를 설정하기 위한 부분 ⬇ ==================================================
 
-    // 무결성을 위해 양방향 설정을 추가해야 함
+    // 양방향 연관관계 입니다.
+    // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
     @OneToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    // 영방향 연관관계 입니다.
+    // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
     @OneToMany(mappedBy = "cartList" , cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
+
+    public void setUser(User user) {
+        this.user = user;
+        if (user.getCartList() != this) {
+            user.setCartList(this);  // 반대편 연관관계 설정
+        }
+    }
+
+    public void addCartItem(CartItem cartItem) {
+        cartItems.add(cartItem);
+        if (cartItem.getCartList() != this) {
+            cartItem.setCartList(this);  // 반대편 연관관계 설정
+        }
+    }
 }

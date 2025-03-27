@@ -20,13 +20,24 @@ public class CartItem {
 
     // 연관관계를 설정하기 위한 부분 ⬇ ==================================================
 
-    // 무결성을 위해 양방향 설정을 추가해야 함
+    // 양방향 연관관계 입니다.
+    // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
     @ManyToOne
     @JoinColumn(name = "CARTLIST_ID")
     private CartList cartList;
 
-    // 무결성을 위해 양방향 설정을 추가해야 함
+    // 단방향 연관관계 입니다
     @ManyToOne
     @JoinColumn(name = "ITEM_ID")
     private Item item;
+
+    public void setCartList(CartList cartList) {
+        this.cartList = cartList;
+        if (cartList.getCartItems() == null) {
+            cartList.setCartItems(new ArrayList<>());  // cartItems가 null일 경우 초기화
+        }
+        if (!cartList.getCartItems().contains(this)) {
+            cartList.getCartItems().add(this);  // 반대편 연관관계 설정
+        }
+    }
 }
