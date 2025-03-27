@@ -18,6 +18,12 @@ public class PaymentList {
     @Column(name = "PAYMENTSTATUS")
     private PaymentStatus paymentStatus;
 
+    @Column(name = "TOTALAMOUNT")
+    private Long totalAmount;
+
+    @Column(name = "UNIQUENUMBER")
+    private String uniqueNumber;
+
     // 연관관계를 설정하기 위한 부분 ⬇ ==================================================
 
     // 영방향 연관관계 입니다.
@@ -73,5 +79,21 @@ public class PaymentList {
 
     public void setPaymentItems(List<PaymentItem> paymentItems) {
         this.paymentItems = paymentItems;
+    }
+
+    public Long getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Long totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public String getUniqueNumber() {
+        return uniqueNumber;
+    }
+
+    public void setUniqueNumber(String uniqueNumber) {
+        this.uniqueNumber = uniqueNumber;
     }
 }
