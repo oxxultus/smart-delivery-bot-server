@@ -13,6 +13,7 @@ public class PaymentList {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "PAYMENTSTATUS")
     private PaymentStatus paymentStatus;
 
     @ManyToOne

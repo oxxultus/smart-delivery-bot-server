@@ -10,7 +10,10 @@ public class CartItem {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "QUANTITY")
     private int quantity;
+
+    @Column(name = "TOTALPRICE")
     private Long totalPrice;
 
     @ManyToOne

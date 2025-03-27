@@ -9,9 +9,12 @@ public class PaymentItem {
     @Id
     @GeneratedValue
     private Long id;
-    private int quantity;
-    private Long totalPrice;
 
+    @Column(name = "QUANTITY")
+    private int quantity;
+
+    @Column(name = "TOTALPRICE")
+    private Long totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "PAYMENTLIST_ID")

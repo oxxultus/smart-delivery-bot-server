@@ -14,10 +14,13 @@ public class User {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "ROLE")
     private Role role;
 
+    @Column(name = "EMAIL", unique = true, nullable = true)
     private String email;
 
+    @Column(name = "PASSWORD", nullable = true)
     private String password;
 
     @OneToOne(mappedBy = "user")
