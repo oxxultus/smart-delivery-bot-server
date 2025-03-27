@@ -2,6 +2,8 @@ package bwajo.bwajoserver.entity;
 
 import jakarta.persistence.*;
 
+import java.util.*;
+
 @Entity
 @Table(name = "PAYMENTITEMS")
 public class PaymentItem {
@@ -39,5 +41,43 @@ public class PaymentItem {
         if (!paymentList.getPaymentItems().contains(this)) {
             paymentList.getPaymentItems().add(this);  // 반대편 연관관계 설정
         }
+    }
+
+    // 그 외의 Getter / Setter 등등 ⬇ ==================================================
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Long getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public PaymentList getPaymentList() {
+        return paymentList;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

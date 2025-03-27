@@ -35,9 +35,31 @@ public class CartList {
     }
 
     public void addCartItem(CartItem cartItem) {
-        cartItems.add(cartItem);
+        cartItems.add(cartItem);  // null 체크 없이 바로 추가
         if (cartItem.getCartList() != this) {
             cartItem.setCartList(this);  // 반대편 연관관계 설정
         }
+    }
+
+    // 그 외의 Getter / Setter 등등 ⬇ ==================================================
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 }

@@ -16,7 +16,7 @@ public class User {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ROLE")
+    @Column(name = "ROLE", nullable = false)
     private Role role;
 
     @Column(name = "EMAIL", unique = true, nullable = true)
@@ -43,6 +43,7 @@ public class User {
             cartList.setUser(this);  // 반대편 연관관계 설정
         }
     }
+
     public void addPaymentList(PaymentList paymentList) {
         if (paymentLists == null) {
             paymentLists = new ArrayList<>(); // null일 경우 초기화
@@ -51,5 +52,51 @@ public class User {
         if (paymentList.getUser() != this) {
             paymentList.setUser(this);  // 반대편 연관관계 설정
         }
+    }
+
+    // 그 외의 Getter / Setter 등등 ⬇ ==================================================
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public CartList getCartList() {
+        return cartList;
+    }
+
+    public List<PaymentList> getPaymentLists() {
+        return paymentLists;
+    }
+
+    public void setPaymentLists(List<PaymentList> paymentLists) {
+        this.paymentLists = paymentLists;
     }
 }

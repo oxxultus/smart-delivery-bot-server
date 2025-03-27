@@ -26,4 +26,54 @@ public class Item {
 
     @Column(name = "UNIQUEVALUE")
     private String uniqueValue;
+
+    // 그 외의 Getter / Setter 등등 ⬇ ==================================================
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    public Long getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Long stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getUniqueValue() {
+        return uniqueValue;
+    }
+
+    public void setUniqueValue(String uniqueValue) {
+        this.uniqueValue = uniqueValue;
+    }
 }

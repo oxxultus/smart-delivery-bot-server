@@ -34,13 +34,44 @@ public class PaymentList {
     public void setUser(User user) {
         this.user = user;
         if (!user.getPaymentLists().contains(this)) {
-            user.getPaymentLists().add(this);  // 반대편 연관관계 설정
+            user.getPaymentLists().add(this);
         }
     }
+
     public void addPaymentItems(PaymentItem paymentItem) {
-        paymentItems.add(paymentItem);
+        paymentItems.add(paymentItem);  // null 체크 없이 바로 추가
         if (paymentItem.getPaymentList() != this) {
             paymentItem.setPaymentList(this);  // 반대편 연관관계 설정
         }
+    }
+
+    // 그 외의 Getter / Setter 등등 ⬇ ==================================================
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<PaymentItem> getPaymentItems() {
+        return paymentItems;
+    }
+
+    public void setPaymentItems(List<PaymentItem> paymentItems) {
+        this.paymentItems = paymentItems;
     }
 }
