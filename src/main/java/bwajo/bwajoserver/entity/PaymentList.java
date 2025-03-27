@@ -5,15 +5,20 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
+@Table(name = "PAYMENTLISTS")
 public class PaymentList {
 
     @Id
+    @GeneratedValue
     private Long id;
+
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
     @ManyToOne
+    @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "item")
     private List<PaymentItem> paymentItems = new ArrayList<>();
 }
