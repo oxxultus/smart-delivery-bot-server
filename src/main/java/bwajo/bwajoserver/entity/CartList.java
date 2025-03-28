@@ -24,7 +24,7 @@ public class CartList {
 
     // 영방향 연관관계 입니다.
     // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
-    @OneToMany(mappedBy = "cartList" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cartList" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
     public void setUser(User user) {

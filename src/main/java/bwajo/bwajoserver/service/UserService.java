@@ -19,4 +19,7 @@ public interface UserService {
     // 계정 삭제
     ResultMessage delete(String email, String password);
 
+    // 회원 찾기
+    User getUserByEmail(String email);
+
 }

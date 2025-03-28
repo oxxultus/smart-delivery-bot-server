@@ -3,8 +3,10 @@ package bwajo.bwajoserver.service;
 import bwajo.bwajoserver.dto.PaymentListNumber;
 import bwajo.bwajoserver.dto.ResultMessage;
 import bwajo.bwajoserver.entity.*;
+import bwajo.bwajoserver.repository.CartListRepository;
 import bwajo.bwajoserver.repository.PaymentItemRepository;
 import bwajo.bwajoserver.repository.PaymentListRepository;
+import bwajo.bwajoserver.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,11 +19,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentListRepository paymentListRepository;
     private final PaymentItemRepository paymentItemRepository;
+    private final CartListRepository cartListRepository;
 
     @Autowired
-    public PaymentServiceImpl(PaymentListRepository paymentListRepository, PaymentItemRepository paymentItemRepository) {
+    public PaymentServiceImpl(PaymentListRepository paymentListRepository, PaymentItemRepository paymentItemRepository, CartListRepository cartListRepository) {
         this.paymentListRepository = paymentListRepository;
         this.paymentItemRepository = paymentItemRepository;
+        this.cartListRepository = cartListRepository;
     }
 
     // 결제 추가
@@ -58,6 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 결제 리스트 저장
         paymentListRepository.save(paymentList);
+
 
         /* TODO:
             - 결제 내역 추가가 되면 결제내역의 고유번호와 상품 정보를 아두이노 모듈로 전달.

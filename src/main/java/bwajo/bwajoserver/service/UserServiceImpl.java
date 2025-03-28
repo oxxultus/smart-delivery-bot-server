@@ -57,4 +57,9 @@ public class UserServiceImpl implements UserService {
         }
         return new ResultMessage(401,"회원 삭제 실패");
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

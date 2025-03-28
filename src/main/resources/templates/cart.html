@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>장바구니</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    .empty-list {
+      text-align: center;
+      color: #888;
+      padding: 20px;
+    }
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-delete {
+      background-color: #f44336;
+    }
+    .btn:hover {
+      opacity: 0.8;
+    }
+    .quantity-control {
+      display: flex;
+      align-items: center;
+    }
+    .quantity-control button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .quantity-control input {
+      width: 50px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>장바구니</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>상품명</th>
+      <th>카테고리</th>
+      <th>가격</th>
+      <th>수량</th>
+      <th>총 가격</th>
+      <th>액션</th>
+    </tr>
+    </thead>
+    <tbody th:if="${not #lists.isEmpty(cartItems)}">
+    <tr th:each="cartItem : ${cartItems}">
+      <td th:text="${cartItem.id}"></td>
+      <td th:text="${cartItem.item.name}"></td>
+      <td th:text="${cartItem.item.category}"></td>
+      <td th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'"></td>
+      <td>
+        <div class="quantity-control">
+          <button th:onclick="'updateQuantity(' + ${cartItem.id} + ', -1)'">-</button>
+          <input type="number" th:value="${cartItem.quantity}" readonly th:id="'quantity-' + ${cartItem.id}">
+          <button th:onclick="'updateQuantity(' + ${cartItem.id} + ', 1)'">+</button>
+        </div>
+      </td>
+      <td th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.quantity, 0, 'COMMA')} + '원'"></td>
+      <td>
+        <button class="btn btn-delete" th:onclick="'deleteCartItem(' + ${cartItem.id} + ')'">삭제</button>
+      </td>
+    </tr>
+    </tbody>
+    <tbody th:if="${#lists.isEmpty(cartItems)}">
+    <tr>
+      <td colspan="7" class="empty-list">장바구니가 비어있습니다.</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="action-buttons" th:if="${not #lists.isEmpty(cartItems)}">
+    <button class="btn" onclick="processPayment()">결제하기</button>
+  </div>
+</div>
+
+<script>
+  function updateQuantity(cartItemId, change) {
+    const quantityInput = document.getElementById('quantity-' + cartItemId);
+    let currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity + change > 0) {
+      fetch('/updateCartItemQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartItemId: cartItemId, quantityChange: change })
+      })
+              .then(response => response.ok ? location.reload() : alert('수량 변경 중 오류 발생'))
+              .catch(() => alert('네트워크 오류 발생'));
+    }
+  }
+
+  function deleteCartItem(cartItemId) {
+    fetch('/deleteCartItem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cartItemId: cartItemId })
+    })
+            .then(response => response.ok ? location.reload() : alert('상품 삭제 중 오류 발생'))
+            .catch(() => alert('네트워크 오류 발생'));
+  }
+
+  function processPayment() {
+    fetch('/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    })
+            .then(response => {
+              if (response.ok) {
+                window.location.href = '/payment-result';
+              } else {
+                alert('결제 요청 중 오류 발생');
+              }
+            })
+            .catch(() => alert('네트워크 오류 발생'));
+  }
+</script>
+</body>
+</html>

@@ -9,6 +9,10 @@ import bwajo.bwajoserver.repository.CartItemRepository;
 import bwajo.bwajoserver.repository.CartListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CartListServiceImpl implements CartListService {
@@ -83,25 +87,27 @@ public class CartListServiceImpl implements CartListService {
         return new ResultMessage(200, "아이템이 장바구니에서 삭제되었습니다.");
     }
 
+    @Override
+    public CartList getCartItems(User user) {
+        return cartListRepository.findByUser(user);
+    }
+
     // 결제 처리
     @Override
     public ResultMessage payment(User user) {
-        // 1. 해당 사용자가 장바구니를 갖고 있는지 확인
         CartList cartList = cartListRepository.findByUser(user);
         if (cartList == null || cartList.getCartItems().isEmpty()) {
             return new ResultMessage(404, "장바구니에 아이템이 없습니다.");
         }
 
-        // 3. 결제 성공 처리 (여기서는 예시로 결제 성공 메시지만 반환)
-        // 실제 서비스로 정보가 이동됩니다.
-        if(paymentService.addPayment(user, cartList).getCode() == 200) {
-            // 4. 결제 후 장바구니 아이템 삭제
-            cartList.getCartItems().clear();  // 장바구니 비우기
-            cartListRepository.save(cartList); // 변경 사항 저장
-        }
-        else {
+        if (paymentService.addPayment(user, cartList).getCode() == 201) {
+            // 장바구니 아이템 삭제
+            cartList.getCartItems().clear();
+            cartListRepository.save(cartList);  // CartList 저장
+        } else {
             return new ResultMessage(400, "결제 실패. 장바구니가 유지됩니다.");
         }
+
         return new ResultMessage(200, "결제 성공. 장바구니가 비워졌습니다.");
     }
 }
