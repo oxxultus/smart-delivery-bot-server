@@ -14,7 +14,10 @@ public interface CartListService {
     ResultMessage addItem(User user, Item item, int quantity, Long totalPrice);
 
     // 장바구니에서 상품 삭제
-    ResultMessage deleteItem(User user, Item item);
+    ResultMessage deleteItem(User user, String uniqueValue);
+
+    // 장바구니에서 아이디로 상품 삭제
+    ResultMessage deleteItemById(User user, Long id);
 
     // 장바구니 목록 가져오기
     CartList getCartItems(User user);

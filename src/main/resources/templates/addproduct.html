@@ -67,6 +67,7 @@
         <option value="clothing">의류</option>
         <option value="books">도서</option>
         <option value="home">가전/생활용품</option>
+        <option value="food">음식</option>
         <option value="etc">기타</option>
       </select>
     </div>
@@ -114,8 +115,8 @@
             .then(response => {
               if (response.ok) {
                 alert('상품이 성공적으로 추가되었습니다.');
-                // 폼 초기화
-                document.getElementById('productForm').reset();
+                // products 페이지로 이동
+                window.location.href = "/products";
               } else {
                 alert('상품 추가 중 오류가 발생했습니다.');
               }

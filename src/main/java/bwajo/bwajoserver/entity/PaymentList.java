@@ -34,7 +34,7 @@ public class PaymentList {
 
     // 영방향 연관관계 입니다.
     // 무결성을 위해 양방향 설정을 추가해야 함
-    @OneToMany(mappedBy = "paymentList" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paymentList" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentItem> paymentItems = new ArrayList<>();
 
     public void setUser(User user) {

@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>홈</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    /* 사이드바 스타일 */
+    .sidebar {
+      width: 250px;
+      background-color: #333;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      padding-top: 20px;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 15px;
+      text-align: center;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+    .sidebar ul li a:hover {
+      background-color: #575757;
+    }
+
+    .content {
+      margin-left: 240px;
+      padding: 20px;
+      width: calc(100% - 240px);
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .content h1 {
+      color: #343a40;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-홈 페이지 입니다
+
+<!-- 사이드바 -->
+<div class="sidebar">
+  <h2>메뉴</h2>
+  <ul>
+    <li><a href="/cart">장바구니</a></li>
+    <li><a href="/products">상품 목록</a></li>
+    <li><a href="/payment-result">결제 내역</a></li>
+  </ul>
+</div>
+
+<div class="content">
+  <div class="container">
+    <h1>홈 페이지 입니다</h1>
+  </div>
+</div>
+
 </body>
 </html>

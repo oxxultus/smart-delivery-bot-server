@@ -29,12 +29,12 @@ public class User {
 
     // 영방향 연관관계 입니다.
     // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private CartList cartList;
 
     // 영방향 연관관계 입니다.
     // 무결성을 위해 양방향 설정을 추가해야 함 (완료)
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentList> paymentLists = new ArrayList<>();
 
     public void setCartList(CartList cartList) {

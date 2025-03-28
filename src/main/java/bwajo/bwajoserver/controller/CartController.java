@@ -2,6 +2,8 @@ package bwajo.bwajoserver.controller;
 
 
 import bwajo.bwajoserver.dto.BodyItem;
+import bwajo.bwajoserver.dto.DeleteCartItemRequest;
+import bwajo.bwajoserver.dto.ResultMessage;
 import bwajo.bwajoserver.entity.*;
 import bwajo.bwajoserver.service.CartListService;
 import bwajo.bwajoserver.service.ItemService;
@@ -12,8 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class CartController {
@@ -61,8 +65,18 @@ public class CartController {
         cartListService.addItem(user, item, 1, bodyItem.getPrice());
 
         // 장바구니 페이지로 이동
-        return "redirect:/list-product"; // 또는 원래 페이지로 리디렉션
+        return "redirect:/products"; // 또는 원래 페이지로 리디렉션
     }
 
+    @PostMapping("/deleteCartItem")
+    public String deleteCartItem(@RequestBody DeleteCartItemRequest request) {
+        // "관리자" 이메일로 사용자 정보 가져오기
+        User user = userService.getUserByEmail("관리자");
 
+        // 아이템 삭제
+        ResultMessage result = cartListService.deleteItemById(user, request.getCartItemId());
+
+        // 삭제 결과 반환
+        return "redirect:/cart";
+    }
 }

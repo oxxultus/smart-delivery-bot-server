@@ -7,12 +7,14 @@ import bwajo.bwajoserver.entity.Item;
 import bwajo.bwajoserver.entity.User;
 import bwajo.bwajoserver.repository.CartItemRepository;
 import bwajo.bwajoserver.repository.CartListRepository;
+import bwajo.bwajoserver.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CartListServiceImpl implements CartListService {
@@ -20,12 +22,14 @@ public class CartListServiceImpl implements CartListService {
     private final CartItemRepository cartItemRepository;
     private final CartListRepository cartListRepository;
     private final PaymentService paymentService;
+    private final ItemRepository itemRepository;
 
     @Autowired
-    public CartListServiceImpl(CartItemRepository cartItemRepository, CartListRepository cartListRepository, PaymentService paymentService) {
+    public CartListServiceImpl(CartItemRepository cartItemRepository, CartListRepository cartListRepository, PaymentService paymentService, ItemRepository itemRepository) {
         this.cartItemRepository = cartItemRepository;
         this.cartListRepository = cartListRepository;
         this.paymentService = paymentService;
+        this.itemRepository = itemRepository;
     }
 
     // 장바구니에 아이템 추가
@@ -57,14 +61,21 @@ public class CartListServiceImpl implements CartListService {
 
     // 장바구니에서 아이템 삭제
     @Override
-    public ResultMessage deleteItem(User user, Item item) {
-        // 1. 해당 사용자가 장바구니를 갖고 있는지 확인
+    public ResultMessage deleteItem(User user, String uniqueValue) {
+        // 1. uniqueValue에 해당하는 Item을 찾기
+        Optional<Item> itemOp = itemRepository.findByUniqueValue(uniqueValue);
+        if (itemOp.isEmpty()) {
+            return new ResultMessage(404, "해당 아이템을 찾을 수 없습니다.");
+        }
+        Item item = itemOp.get();
+
+        // 2. 해당 사용자가 장바구니를 갖고 있는지 확인
         CartList cartList = cartListRepository.findByUser(user);
         if (cartList == null) {
             return new ResultMessage(404, "장바구니를 찾을 수 없습니다.");
         }
 
-        // 2. 해당 장바구니에서 삭제할 아이템 찾기
+        // 3. 해당 장바구니에서 삭제할 아이템 찾기
         CartItem cartItemToDelete = null;
         for (CartItem cartItem : cartList.getCartItems()) {
             if (cartItem.getItem().equals(item)) {
@@ -77,13 +88,62 @@ public class CartListServiceImpl implements CartListService {
             return new ResultMessage(404, "해당 아이템이 장바구니에 없습니다.");
         }
 
-        // 3. 장바구니에서 아이템 삭제
+        // 4. 장바구니에서 아이템 삭제
         cartList.getCartItems().remove(cartItemToDelete);
         cartItemRepository.delete(cartItemToDelete); // 실제로 아이템 삭제
 
-        // 4. 변경된 장바구니 저장
+        // 5. 변경된 장바구니 저장
         cartListRepository.save(cartList);
 
+        return new ResultMessage(200, "아이템이 장바구니에서 삭제되었습니다.");
+    }
+
+    // 장바구니에서 아이디로 아이템 삭제
+    // TODO: 아이템 삭제 구현 및 오류 수정해야함
+    @Override
+    public ResultMessage deleteItemById(User user, Long id) {
+        // 1. uniqueValue에 해당하는 Item을 찾기
+        Optional<Item> itemOp = itemRepository.findById(id);
+
+        System.out.println("ID:" + id);
+
+        if (itemOp.isEmpty()) {
+            return new ResultMessage(404, "해당 아이템을 찾을 수 없습니다.");
+        }
+
+        Item item = itemOp.get();
+
+        // 2. 해당 사용자가 장바구니를 갖고 있는지 확인
+        CartList cartList = cartListRepository.findByUser(user);
+        if (cartList == null) {
+            System.out.println("\"장바구니를 찾을 수 없습니다.\"");
+            return new ResultMessage(404, "장바구니를 찾을 수 없습니다.");
+        }
+
+        // 3. 해당 장바구니에서 삭제할 아이템 찾기
+        CartItem cartItemToDelete = null;
+        for (CartItem cartItem : cartList.getCartItems()) {
+            if (cartItem.getItem().equals(item)) {
+                cartItemToDelete = cartItem;
+                break;
+            }
+        }
+
+        if (cartItemToDelete == null) {
+            System.out.println("\"해당 아이템이 장바구니에 없습니다..\"");
+            return new ResultMessage(404, "해당 아이템이 장바구니에 없습니다.");
+        }
+
+        // 4. 장바구니에서 아이템 삭제
+        cartList.getCartItems().remove(cartItemToDelete);
+        cartItemRepository.delete(cartItemToDelete); // 실제로 아이템 삭제
+
+        // 5. 변경된 장바구니 저장
+        cartListRepository.save(cartList);
+
+
+
+        System.out.println("\"아이템이 장바구니에서 삭제되었습니다.\"");
         return new ResultMessage(200, "아이템이 장바구니에서 삭제되었습니다.");
     }
 

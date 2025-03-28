@@ -7,10 +7,47 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      display: flex;
       background-color: #f4f4f4;
+    }
+
+    /* 사이드바 스타일 */
+    .sidebar {
+      width: 250px;
+      background-color: #333;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      padding-top: 20px;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      padding: 15px;
+      text-align: center;
+    }
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+    .sidebar ul li a:hover {
+      background-color: #575757;
+    }
+
+    /* 컨텐츠 스타일 */
+    .content {
+      margin-left: 260px;
+      padding: 20px;
+      width: calc(100% - 260px);
     }
     .container {
       background-color: white;
@@ -62,37 +99,96 @@
     .btn:hover {
       opacity: 0.8;
     }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>결제 결과</h1>
 
-  <table>
-    <thead>
-    <tr>
-      <th>결제 ID</th>
-      <th>결제 상태</th>
-      <th>총 금액</th>
-      <th>고유 번호</th>
-    </tr>
-    </thead>
-    <tbody th:if="${not #lists.isEmpty(paymentLists)}">
-    <tr th:each="payment : ${paymentLists}">
-      <td th:text="${payment.id}"></td>
-      <td th:text="${payment.paymentStatus}"></td>
-      <td th:text="${#numbers.formatInteger(payment.totalAmount, 0, 'COMMA')} + '원'"></td>
-      <td th:text="${payment.uniqueNumber}"></td>
-    </tr>
-    </tbody>
-    <tbody th:if="${#lists.isEmpty(paymentLists)}">
-    <tr>
-      <td colspan="4" class="empty-list">결제 내역이 없습니다.</td>
-    </tr>
-    </tbody>
-  </table>
-
-  <a href="/" class="btn">홈으로 돌아가기</a>
+<!-- 사이드바 -->
+<div class="sidebar">
+  <h2>메뉴</h2>
+  <ul>
+    <li><a href="/">홈</a></li>
+    <li><a href="/cart">장바구니</a></li>
+    <li><a href="/products">상품 목록</a></li>
+    <li><a href="/payment-result">결제 내역</a></li>
+  </ul>
 </div>
+
+<!-- 본문 -->
+<div class="content">
+  <div class="container">
+    <h1>결제 결과</h1>
+
+    <table>
+      <thead>
+      <tr>
+        <th>결제 ID</th>
+        <th>결제 상태</th>
+        <th>총 금액</th>
+        <th>고유 번호</th>
+        <th>삭제</th> <!-- 삭제 버튼 추가 -->
+      </tr>
+      </thead>
+      <tbody th:if="${not #lists.isEmpty(paymentLists)}">
+      <tr th:each="payment : ${paymentLists}">
+        <td th:text="${payment.id}"></td>
+        <td th:text="${payment.paymentStatus}"></td>
+        <td th:text="${#numbers.formatInteger(payment.totalAmount, 0, 'COMMA')} + '원'"></td>
+        <td th:text="${payment.uniqueNumber}"></td>
+        <!-- 삭제 버튼 추가 -->
+        <td><button class="btn delete-btn" onclick="deletePayment('${payment.uniqueNumber}')">삭제</button></td>
+      </tr>
+      </tbody>
+      <tbody th:if="${#lists.isEmpty(paymentLists)}">
+      <tr>
+        <td colspan="5" class="empty-list">결제 내역이 없습니다.</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <a href="/" class="btn">홈으로 돌아가기</a>
+  </div>
+</div>
+
+<script>
+  function deletePayment(paymentUniqueNumber) {
+    if (!confirm('정말로 이 결제를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    // URL 인코딩하여 요청 보내기
+    const encodedPaymentUniqueNumber = encodeURIComponent(paymentUniqueNumber);
+
+    fetch('/deletePayment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ paymentUniqueNumber: encodedPaymentUniqueNumber })  // JSON 형식으로 데이터 전송
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert('결제가 삭제되었습니다.');
+                location.reload(); // 페이지 새로고침
+              } else {
+                alert('결제 삭제 중 오류가 발생했습니다.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('네트워크 오류가 발생했습니다.');
+            });
+  }
+</script>
+
 </body>
 </html>

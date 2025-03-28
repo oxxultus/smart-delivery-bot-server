@@ -20,12 +20,14 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentListRepository paymentListRepository;
     private final PaymentItemRepository paymentItemRepository;
     private final CartListRepository cartListRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public PaymentServiceImpl(PaymentListRepository paymentListRepository, PaymentItemRepository paymentItemRepository, CartListRepository cartListRepository) {
+    public PaymentServiceImpl(PaymentListRepository paymentListRepository, PaymentItemRepository paymentItemRepository, CartListRepository cartListRepository,  UserRepository userRepository) {
         this.paymentListRepository = paymentListRepository;
         this.paymentItemRepository = paymentItemRepository;
         this.cartListRepository = cartListRepository;
+        this.userRepository = userRepository;
     }
 
     // 결제 추가
@@ -84,24 +86,27 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 결제 취소
+    // TODO: 결재 내역 삭제 구현 및 오류 수정해야함
     @Override
     public ResultMessage undoPayment(User user, String paymentListUniqueNumber) {
-        // 사용자의 결제 리스트 조회
-        List<PaymentList> paymentLists = user.getPaymentLists();
-        if (paymentLists.isEmpty()) {
-            return new ResultMessage(404, "결제 내역이 없습니다.");
-        }
+        // 사용자의 결제 리스트에서 uniqueNumber에 해당하는 결제 내역을 찾는다.
+        Optional<PaymentList> paymentListOptional = user.getPaymentLists().stream()
+                .filter(paymentList -> paymentList.getUniqueNumber().equals(paymentListUniqueNumber))
+                .findFirst();
 
-        // 결제 내역 중 해당 UniqueNumber에 맞는 결제 내역 찾기
-        Optional<PaymentList> paymentListOptional = paymentListRepository.findByUniqueNumber(paymentListUniqueNumber);
         if (paymentListOptional.isEmpty()) {
             return new ResultMessage(404, "결제 내역을 찾을 수 없습니다.");
         }
 
         PaymentList paymentList = paymentListOptional.get();
 
-        // 결제 내역 삭제
-        paymentListRepository.delete(paymentList);
+        // PaymentList에서 관련된 PaymentItem들을 제거 (이미 orphanRemoval이 설정되었으면 자동으로 삭제됨)
+        paymentList.getPaymentItems().clear();
+        paymentListRepository.save(paymentList);
+
+        // User의 paymentLists에서 해당 결제 내역 제거
+        user.getPaymentLists().remove(paymentList);
+        userRepository.save(user);
 
         return new ResultMessage(200, "결제 내역이 삭제되었습니다.");
     }
