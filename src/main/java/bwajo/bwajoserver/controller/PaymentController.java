@@ -51,22 +51,18 @@ public class PaymentController {
     }
 
     @PostMapping("/deletePayment")
-    public ResponseEntity<Map<String, Object>> deletePayment(@RequestBody Map<String, String> request) {
+    public ResponseEntity<ResultMessage> deletePayment(@RequestBody Map<String, String> request) {
         String paymentUniqueNumber = request.get("paymentUniqueNumber");
-        Map<String, Object> response = new HashMap<>();
 
         try {
             // 결제 삭제 로직
             User user = userService.getUserByEmail("관리자");  // 관리자 정보 가져오기
-            paymentService.undoPayment(user, paymentUniqueNumber);  // 결제 취소 처리
+            ResultMessage result = paymentService.undoPayment(user, paymentUniqueNumber);  // 결제 취소 처리
 
-            response.put("success", true);
-            response.put("message", "결제가 삭제되었습니다.");
-            return ResponseEntity.ok(response);  // 성공적인 삭제 응답 반환
+            return ResponseEntity.status(result.getCode()).body(result); // HTTP 상태 코드와 메시지 반환
         } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "결제 삭제 중 오류가 발생했습니다.");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);  // 내부 서버 오류 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResultMessage(500, "결제 삭제 중 오류가 발생했습니다."));  // 내부 서버 오류 응답
         }
     }
 }

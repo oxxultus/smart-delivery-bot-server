@@ -99,19 +99,18 @@ public class CartListServiceImpl implements CartListService {
     }
 
     // 장바구니에서 아이디로 아이템 삭제
-    // TODO: 아이템 삭제 구현 및 오류 수정해야함
     @Override
     public ResultMessage deleteItemById(User user, Long id) {
         // 1. uniqueValue에 해당하는 Item을 찾기
-        Optional<Item> itemOp = itemRepository.findById(id);
+        Optional<CartItem> cartItemOp = cartItemRepository.findById(id);
 
         System.out.println("ID:" + id);
 
-        if (itemOp.isEmpty()) {
+        if (cartItemOp.isEmpty()) {
             return new ResultMessage(404, "해당 아이템을 찾을 수 없습니다.");
         }
 
-        Item item = itemOp.get();
+        CartItem cartItem = cartItemOp.get();
 
         // 2. 해당 사용자가 장바구니를 갖고 있는지 확인
         CartList cartList = cartListRepository.findByUser(user);
@@ -122,8 +121,8 @@ public class CartListServiceImpl implements CartListService {
 
         // 3. 해당 장바구니에서 삭제할 아이템 찾기
         CartItem cartItemToDelete = null;
-        for (CartItem cartItem : cartList.getCartItems()) {
-            if (cartItem.getItem().equals(item)) {
+        for (CartItem checkCartItem : cartList.getCartItems()) {
+            if (checkCartItem.getId().equals(cartItem.getId())) {
                 cartItemToDelete = cartItem;
                 break;
             }
@@ -140,8 +139,6 @@ public class CartListServiceImpl implements CartListService {
 
         // 5. 변경된 장바구니 저장
         cartListRepository.save(cartList);
-
-
 
         System.out.println("\"아이템이 장바구니에서 삭제되었습니다.\"");
         return new ResultMessage(200, "아이템이 장바구니에서 삭제되었습니다.");

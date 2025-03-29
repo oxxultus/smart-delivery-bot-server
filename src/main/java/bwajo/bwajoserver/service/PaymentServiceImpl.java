@@ -99,13 +99,11 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         PaymentList paymentList = paymentListOptional.get();
-
-        // PaymentList에서 관련된 PaymentItem들을 제거 (이미 orphanRemoval이 설정되었으면 자동으로 삭제됨)
-        paymentList.getPaymentItems().clear();
-        paymentListRepository.save(paymentList);
+        List<PaymentList> paymentLists = user.getPaymentLists();
 
         // User의 paymentLists에서 해당 결제 내역 제거
-        user.getPaymentLists().remove(paymentList);
+        paymentLists.removeIf(checkpaymentList -> checkpaymentList.getUniqueNumber().equals(paymentListUniqueNumber));
+        paymentListRepository.delete(paymentList); // 리포지토리에서 삭제
         userRepository.save(user);
 
         return new ResultMessage(200, "결제 내역이 삭제되었습니다.");
