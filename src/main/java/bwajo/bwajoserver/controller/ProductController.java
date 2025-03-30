@@ -32,11 +32,6 @@ public class ProductController {
 
     // HTML을 제공하기 위한 부분 ⬇ ==================================================
 
-    @GetMapping("/add-product")
-    public String addProduct() {
-        return "addproduct";
-    }
-
     @GetMapping("/products")
     public String listProduct(Model model) {
         List<Item> items = itemService.findAllItems();

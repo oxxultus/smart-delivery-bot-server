@@ -1,0 +1,72 @@
+/* ------------------------------
+ * main 설정 (메인 콘텐츠 영역)
+ * grid-column: 2 -> 오른쪽 열에 위치하도록 설정합니다.
+ * display: grid -> 내부에 그리드 레이아웃 적용합니다.
+ * grid-template-rows: auto 1fr -> 위쪽은 내용 크기, 아래는 남은 공간을 차지합니다.
+ * gap: 20px -> 그리드 항목 간의 간격을 설정합니다.
+ * padding: 20px -> 내부 여백을 적용합니다.
+ */
+main {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr;
+    grid-template-rows: auto 730px;
+    gap: 10px;
+    padding: 0 10px 10px 10px;
+    /*border: 1px solid black;*/
+}
+/* ------------------------------
+ * header 설정
+ * grid-column: 1 / 3 -> 헤더가 전체 열을 차지하도록 설정합니다.
+ * background-color: #34495e -> 중간 톤의 파란색 배경을 적용합니다.
+ * color: white -> 글자색을 흰색으로 설정합니다.
+ * display: flex -> 플렉스박스를 사용해 레이아웃을 쉽게 조정합니다.
+ * justify-content: space-between -> 요소를 양 끝으로 정렬합니다.
+ * align-items: center -> 요소를 수직 중앙으로 정렬합니다.
+ * padding: 20px -> 내부 여백을 설정합니다.
+ */
+header {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 13px 13px 30px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+/* ------------------------------
+ * section 설정 (카드형 레이아웃)
+ * display: grid -> 그리드 레이아웃을 사용합니다.
+ * grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) -> 자동으로 아이템을 맞추며, 최소 200px을 유지하고 남는 공간을 균등하게 배분합니다.
+ * gap: 20px -> 항목 간의 간격을 설정합니다.
+ */
+section {
+    grid-column: 1 / 5;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    border: solid 1px white;
+}
+
+/* ------------------------------
+ * section div, article 설정 (카드 스타일)
+ * background-color: #ecf0f1 -> 밝은 회색 배경을 적용합니다.
+ * padding: 20px -> 내부 여백을 설정합니다.
+ * border-radius: 8px -> 카드 모서리를 둥글게 만듭니다.
+ */
+section div, article {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* ------------------------------
+ * 제목 스타일 설정
+ * margin: 0 -> 기본 여백을 제거해 레이아웃을 깔끔하게 유지합니다.
+ */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}

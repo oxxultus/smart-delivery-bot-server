@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -76,13 +77,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 랜덤 고유 번호를 생성하는 메서드
     private String generateUniqueNumber() {
-        // 랜덤 8자리 숫자를 생성
-        Random random = new Random();
-        StringBuilder uniqueNumber = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            uniqueNumber.append(random.nextInt(10)); // 0부터 9까지의 랜덤 숫자 추가
-        }
-        return uniqueNumber.toString();
+        // UUID 생성
+        UUID uuid = UUID.randomUUID();
+        // UUID에서 하이픈을 제거하고 반환
+        return uuid.toString();
     }
 
     // 결제 취소

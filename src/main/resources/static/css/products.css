@@ -1,0 +1,282 @@
+/* ------------------------------
+ * main 설정 (메인 콘텐츠 영역)
+ * grid-column: 2 -> 오른쪽 열에 위치하도록 설정합니다.
+ * display: grid -> 내부에 그리드 레이아웃 적용합니다.
+ * grid-template-rows: auto 1fr -> 위쪽은 내용 크기, 아래는 남은 공간을 차지합니다.
+ * gap: 20px -> 그리드 항목 간의 간격을 설정합니다.
+ * padding: 20px -> 내부 여백을 적용합니다.
+ */
+main {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr;
+    grid-template-rows: auto 730px;
+    gap: 10px;
+    padding: 0 10px 10px 10px;
+    /*border: 1px solid black;*/
+}
+/* ------------------------------
+ * header 설정
+ * grid-column: 1 / 3 -> 헤더가 전체 열을 차지하도록 설정합니다.
+ * background-color: #34495e -> 중간 톤의 파란색 배경을 적용합니다.
+ * color: white -> 글자색을 흰색으로 설정합니다.
+ * display: flex -> 플렉스박스를 사용해 레이아웃을 쉽게 조정합니다.
+ * justify-content: space-between -> 요소를 양 끝으로 정렬합니다.
+ * align-items: center -> 요소를 수직 중앙으로 정렬합니다.
+ * padding: 20px -> 내부 여백을 설정합니다.
+ */
+header {
+    grid-column: 1 / 5;
+    grid-row: 1;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 13px 13px 30px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+/* ------------------------------
+ * section 설정 (카드형 레이아웃)
+ * display: grid -> 그리드 레이아웃을 사용합니다.
+ * grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) -> 자동으로 아이템을 맞추며, 최소 200px을 유지하고 남는 공간을 균등하게 배분합니다.
+ * gap: 20px -> 항목 간의 간격을 설정합니다.
+ */
+section {
+    grid-column: 1 / 5;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    height: 730px;
+    overflow-x: hidden; /* 가로 스크롤 숨기기 */
+    overflow-y: auto; /* 세로 스크롤 자동 표시 */
+}
+
+section::-webkit-scrollbar {
+    width: 8px; /* 세로 스크롤바의 너비 */
+}
+
+section::-webkit-scrollbar-thumb {
+    background-color: #888; /* 스크롤바 색상 */
+    border-radius: 4px;
+}
+
+section::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 마우스 오버 시 색상 변경 */
+}
+
+/* ------------------------------
+ * section div, article 설정 (카드 스타일)
+ * background-color: #ecf0f1 -> 밝은 회색 배경을 적용합니다.
+ * padding: 20px -> 내부 여백을 설정합니다.
+ * border-radius: 8px -> 카드 모서리를 둥글게 만듭니다.
+ */
+section div article {
+    background-color: white;
+    padding: 20px;
+    border-radius: 13px;
+}
+
+/* ------------------------------
+ * 제목 스타일 설정
+ * margin: 0 -> 기본 여백을 제거해 레이아웃을 깔끔하게 유지합니다.
+ */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+/* ------------------------------
+ * 제목 스타일
+ * h2를 사용하여 상품명을 강조하고 여백을 제거합니다.
+ */
+article h2 {
+    margin: 0 0 10px 0; /* 제목의 아래쪽에 여백을 추가 */
+    font-size: 1.25rem; /* 제목 크기 설정 */
+    color: #333; /* 제목 색상 설정 */
+}
+
+/* ------------------------------
+ * 버튼 스타일 설정
+ * 삭제 버튼과 결제 버튼 스타일을 추가합니다.
+ */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 13px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* ------------------------------
+ * 수량 조정 버튼 스타일
+ * 수량을 조정하는 버튼과 입력 필드를 레이아웃합니다.
+ */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-control input {
+    width: 50px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.quantity-control button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.quantity-control button:hover {
+    background-color: #218838;
+}
+
+/* 공통 버튼 스타일 */
+button {
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    height: 25px;
+    max-width: 200px;
+}
+
+/* 장바구니 추가 버튼 스타일 */
+.cart-btn {
+    background-color: #28a745;  /* 초록색 배경 */
+    color: white;
+    border: 1px solid #28a745;
+    font-size: 15px;
+    height: 33px;
+}
+
+.cart-btn:hover {
+    background-color: #218838;  /* 호버 시 어두운 초록색 */
+    border-color: #1e7e34;
+}
+
+/* 상품 삭제 버튼 스타일 */
+.delete-item-btn {
+    background-color: #dc3545;  /* 빨간색 배경 */
+    color: white;
+    border: 1px solid #dc3545;
+}
+
+.delete-item-btn:hover {
+    background-color: #c82333;  /* 호버 시 어두운 빨간색 */
+    border-color: #bd2130;
+}
+
+/* 버튼 컨테이너 스타일 (상품 액션 영역) */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 상품 추가 정보 숨기기 */
+.hidden-data {
+    display: none;
+}
+
+/* 상품 추가하는 DIV */
+.add-product {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    width: 500px;
+    height: 480px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    z-index: 1000;
+    border: solid 1px #000000;
+}
+
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 10px;
+    width: 96%;
+}
+
+label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+    color: #555;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;  /* Removes the spin box in Firefox */
+}
+
+.form-group #category{
+    width: 500px;
+}
+
+button.add-item-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button.add-item-btn:hover {
+    background-color: #45a049;
+}
+
+button[type="button"] {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="button"]:hover {
+    background-color: #e53935;
+}
