@@ -21,12 +21,16 @@ import java.util.Map;
 @Controller
 public class ProductController {
 
+    // 의존성을 주입하기 위한 부분 ⬇ ==================================================
+
     private final ItemService itemService;
 
     @Autowired
     public ProductController(ItemService itemService) {
         this.itemService = itemService;
     }
+
+    // HTML을 제공하기 위한 부분 ⬇ ==================================================
 
     @GetMapping("/add-product")
     public String addProduct() {
@@ -39,6 +43,8 @@ public class ProductController {
         model.addAttribute("items", items);
         return "products";
     }
+
+    // 데이터를 받아와서 처리하기 위한 부분 ⬇ ==================================================
 
     @PostMapping("/addItem")
     public String addItem(@RequestBody BodyItem bodyItem) {

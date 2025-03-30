@@ -1,9 +1,9 @@
 package bwajo.bwajoserver.dto;
 
-public class PaymentListNumber extends ResultMessage {
+public class PaymentListNumberResultMessage extends ResultMessage {
     private String uniqueNumber;
 
-    public PaymentListNumber(int code, String message, String uniqueNumber) {
+    public PaymentListNumberResultMessage(int code, String message, String uniqueNumber) {
         super(code, message);
         this.uniqueNumber = uniqueNumber;
     }

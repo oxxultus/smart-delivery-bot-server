@@ -132,24 +132,39 @@
       <tr>
         <th>결제 ID</th>
         <th>결제 상태</th>
+        <th>상품 내역</th>
         <th>총 금액</th>
         <th>고유 번호</th>
-        <th>삭제</th> <!-- 삭제 버튼 추가 -->
+        <th>삭제</th>
       </tr>
       </thead>
       <tbody th:if="${not #lists.isEmpty(paymentLists)}">
       <tr th:each="payment : ${paymentLists}">
         <td th:text="${payment.id}"></td>
         <td th:text="${payment.paymentStatus}"></td>
+        <!-- 상품 목록을 리스트 형식으로 표시 -->
+        <td>
+          <ul>
+            <li th:each="cartItem : ${payment.paymentItems}">
+              <span th:text="${cartItem.item.name}"></span> -
+              <span th:text="${cartItem.quantity}"></span>개 -
+              <span th:text="${#numbers.formatInteger(cartItem.totalPrice, 0, 'COMMA')} + '원'"></span>
+            </li>
+          </ul>
+        </td>
         <td th:text="${#numbers.formatInteger(payment.totalAmount, 0, 'COMMA')} + '원'"></td>
         <td th:text="${payment.uniqueNumber}"></td>
-        <!-- 삭제 버튼 추가 -->
-        <td><button class="btn delete-btn" th:attr="onclick='deletePayment(\'' + ${payment.uniqueNumber} + '\')'">삭제</button></td>
+        <td>
+          <button class="btn delete-btn"
+                  th:attr="onclick='deletePayment(\'' + ${payment.uniqueNumber} + '\')'">
+            삭제
+          </button>
+        </td>
       </tr>
       </tbody>
       <tbody th:if="${#lists.isEmpty(paymentLists)}">
       <tr>
-        <td colspan="5" class="empty-list">결제 내역이 없습니다.</td>
+        <td colspan="6" class="empty-list">결제 내역이 없습니다.</td>
       </tr>
       </tbody>
     </table>

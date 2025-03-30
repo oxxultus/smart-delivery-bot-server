@@ -1,6 +1,6 @@
 package bwajo.bwajoserver.service;
 
-import bwajo.bwajoserver.dto.PaymentListNumber;
+import bwajo.bwajoserver.dto.PaymentListNumberResultMessage;
 import bwajo.bwajoserver.dto.ResultMessage;
 import bwajo.bwajoserver.entity.*;
 import bwajo.bwajoserver.repository.CartListRepository;
@@ -32,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 결제 추가
     @Override
-    public PaymentListNumber addPayment(User user, CartList cartList) {
+    public PaymentListNumberResultMessage addPayment(User user, CartList cartList) {
         // 장바구니 아이템들을 PaymentItem으로 변환하여 PaymentList에 추가
         List<CartItem> cartItems = cartList.getCartItems();
         PaymentList paymentList = new PaymentList();
@@ -71,7 +71,7 @@ public class PaymentServiceImpl implements PaymentService {
             - 추가적인 로직은 아두이노 모듈을 관리하는 서비스에서 구현 해야 합니다.
          */
 
-        return new PaymentListNumber(201, "결제 리스트가 생성되었습니다.", uniqueNumber);
+        return new PaymentListNumberResultMessage(201, "결제 리스트가 생성되었습니다.", uniqueNumber);
     }
 
     // 랜덤 고유 번호를 생성하는 메서드
@@ -86,7 +86,6 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     // 결제 취소
-    // TODO: 결재 내역 삭제 구현 및 오류 수정해야함
     @Override
     public ResultMessage undoPayment(User user, String paymentListUniqueNumber) {
         // 사용자의 결제 리스트에서 uniqueNumber에 해당하는 결제 내역을 찾는다.
@@ -117,13 +116,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     // 결제 상태 업데이트
     @Override
-    public PaymentListNumber updateStatus(String paymentListUniqueNumber, PaymentStatus paymentStatus) {
+    public PaymentListNumberResultMessage updateStatus(String paymentListUniqueNumber, PaymentStatus paymentStatus) {
         // 결제 상태 변경을 위한 PaymentList 찾기
         Optional<PaymentList> paymentListOptional = paymentListRepository.findByUniqueNumber(paymentListUniqueNumber);
 
         // PaymentList가 존재하지 않으면 처리할 방법 추가
         if (paymentListOptional.isEmpty()) {
-            return new PaymentListNumber(404, "결제 내역을 찾을 수 없습니다.", "고유키가 존재하지 않음");
+            return new PaymentListNumberResultMessage(404, "결제 내역을 찾을 수 없습니다.", "고유키가 존재하지 않음");
         }
 
         // 결제 상태 업데이트
@@ -133,7 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
         // 결제 리스트 저장
         paymentListRepository.save(paymentList);
 
-        return new PaymentListNumber(200, "결제 상태가 변경되었습니다.", paymentListUniqueNumber);
+        return new PaymentListNumberResultMessage(200, "결제 상태가 변경되었습니다.", paymentListUniqueNumber);
     }
 
     // 모든 결제 리스트 조회

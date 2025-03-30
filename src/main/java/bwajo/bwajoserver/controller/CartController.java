@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class CartController {
+
+    // 의존성을 주입하기 위한 부분 ⬇ ==================================================
 
     CartListService cartListService;
     ItemService itemService;
@@ -32,10 +33,7 @@ public class CartController {
         this.userService = userService;
     }
 
-    public CartController(CartListService cartListService, ItemService itemService) {
-        this.cartListService = cartListService;
-        this.itemService = itemService;
-    }
+    // HTML을 제공하기 위한 부분 ⬇ ==================================================
 
     @GetMapping("/cart")
     public String cart(Model model) {
@@ -45,6 +43,8 @@ public class CartController {
         model.addAttribute("cartItems", cartItems);
         return "cart";
     }
+
+    // 데이터를 받아와서 처리하기 위한 부분 ⬇ ==================================================
 
     @PostMapping("/addCart")
     public String addCart(@RequestBody BodyItem bodyItem) {

@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
         return new ResultMessage(401, "로그인 실패");
     }
 
+    // TODO: 반환값 통일이 필요합니다.
     @Override
     public String findPassword(String email) {
         User user = userRepository.findByEmail(email);

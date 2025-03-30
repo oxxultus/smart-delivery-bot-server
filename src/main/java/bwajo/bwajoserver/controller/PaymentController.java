@@ -23,6 +23,8 @@ import java.util.Map;
 @Controller
 public class PaymentController {
 
+    // 의존성을 주입하기 위한 부분 ⬇ ==================================================
+
     UserService userService;
     PaymentService paymentService;
     CartListService cartListService;
@@ -34,6 +36,8 @@ public class PaymentController {
         this.cartListService = cartListService;
     }
 
+    // HTML을 제공하기 위한 부분 ⬇ ==================================================
+
     @GetMapping("/payment-result")
     public String paymentResult(Model model) {
         User user = userService.getUserByEmail("관리자");
@@ -41,6 +45,8 @@ public class PaymentController {
         model.addAttribute("paymentLists", paymentLists);
         return "paymentresult";
     }
+
+    // 데이터를 받아와서 처리하기 위한 부분 ⬇ ==================================================
 
     @PostMapping("/payment")
     public String payment(){
