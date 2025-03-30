@@ -46,6 +46,8 @@ public class CartController {
 
     // 데이터를 받아와서 처리하기 위한 부분 ⬇ ==================================================
 
+    // 장비구니에 상품 추가
+    // TODO: 상품 추가시 기존 상품이 있다면 해당 상품의 카운트를 올려주는 기능
     @PostMapping("/addCart")
     public String addCart(@RequestBody BodyItem bodyItem) {
         // 유니크 값으로 아이템 조회 (없는 경우 예외 처리)
@@ -67,6 +69,9 @@ public class CartController {
         return "redirect:/products"; // 또는 원래 페이지로 리디렉션
     }
 
+    // TODO: 상품의 수량을 변경하는 기능
+
+    // 장바구니에서 상품 삭제
     @PostMapping("/deleteCartItem")
     public String deleteCartItem(@RequestBody DeleteCartItemRequest request) {
         // "관리자" 이메일로 사용자 정보 가져오기

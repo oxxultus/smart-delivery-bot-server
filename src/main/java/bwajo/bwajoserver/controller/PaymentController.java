@@ -48,6 +48,7 @@ public class PaymentController {
 
     // 데이터를 받아와서 처리하기 위한 부분 ⬇ ==================================================
 
+    // 결제 처리
     @PostMapping("/payment")
     public String payment(){
         User user = userService.getUserByEmail("관리자");
@@ -56,6 +57,7 @@ public class PaymentController {
         return "redirect:/payment-result";
     }
 
+    // 결제 취소 처리
     @PostMapping("/deletePayment")
     public ResponseEntity<ResultMessage> deletePayment(@RequestBody Map<String, String> request) {
         String paymentUniqueNumber = request.get("paymentUniqueNumber");

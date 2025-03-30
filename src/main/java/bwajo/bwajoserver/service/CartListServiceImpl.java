@@ -10,10 +10,7 @@ import bwajo.bwajoserver.repository.CartListRepository;
 import bwajo.bwajoserver.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -144,6 +141,7 @@ public class CartListServiceImpl implements CartListService {
         return new ResultMessage(200, "아이템이 장바구니에서 삭제되었습니다.");
     }
 
+    // 해당 유저의 장바구니 가져오기
     @Override
     public CartList getCartItems(User user) {
         return cartListRepository.findByUser(user);
@@ -167,4 +165,6 @@ public class CartListServiceImpl implements CartListService {
 
         return new ResultMessage(200, "결제 성공. 장바구니가 비워졌습니다.");
     }
+
+    // TODO: 상품의 수량 수정하기 기능 추가
 }
