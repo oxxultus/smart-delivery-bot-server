@@ -1,3 +1,6 @@
+# 프로토타입
+- 웹 으로 단순 로직 테스트 환경 구현
+
 ![홈.png](ViewImages/%ED%99%88.png)
 
 ![상품 목록.png](ViewImages/%EC%83%81%ED%92%88%20%EB%AA%A9%EB%A1%9D.png)
