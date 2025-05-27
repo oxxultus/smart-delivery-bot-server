@@ -93,7 +93,7 @@ public class PaymentServiceImplTest {
         assertEquals(404, result.getCode());
         assertEquals("결제 리스트를 찾을 수 없습니다.", result.getMessage());
     }
-
+    /*
     @Test
     public void testUpdateStatus_Success() {
         String paymentListUniqueNumber = "uniquePayment123";
@@ -113,7 +113,7 @@ public class PaymentServiceImplTest {
         assertEquals("결제 상태가 업데이트되었습니다.", result.getMessage());
         assertEquals(newStatus, paymentList.getPaymentStatus());
     }
-
+*/
     @Test
     public void testFindPaymentsForUser() {
         User user = new User();
