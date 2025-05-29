@@ -209,7 +209,6 @@ public class RobotController {
 
         // 진열대의 1회 작업 종료
         @GetMapping("/end/working-list")
-        @GetMapping("/end/working-list")
         public ResponseEntity<String> endWorkingItem(@RequestParam String uid) {
             if (workingPaymentList == null) {
                 return ResponseEntity.status(400).body("작업 리스트가 존재하지 않습니다.");
