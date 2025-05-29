@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로봇 제어</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: white;
+        }
+
+        .logo {
+            font-size: 30px;
+            color: #00c4c4;
+            font-weight: bold;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .status-icons div {
+            cursor: pointer;
+        }
+
+        .command-section {
+            padding: 30px 16px;
+            text-align: center;
+        }
+
+        .command-section h2 {
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        .robot-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 12px auto;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            background-color: #00c4c4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.2s ease;
+        }
+
+        .robot-btn:hover {
+            background-color: #009a9a;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+        }
+
+        .bottom-nav div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="logo">PICK & GO</div>
+    <div class="status-icons">
+        <div onclick="alert('알림 페이지로 이동합니다')">🔔</div>
+        <div onclick="location.href='/cart'">🛒</div>
+    </div>
+</div>
+
+<div class="command-section">
+    <h2>🤖 로봇 제어 패널</h2>
+
+    <button class="robot-btn" onclick="sendCommand('start')">🚀 START</button>
+    <button class="robot-btn" onclick="sendCommand('stop')">🛑 STOP</button>
+    <button class="robot-btn" onclick="sendCommand('go')">🏃 GO</button>
+    <button class="robot-btn" onclick="sendCommand('reset')">END</button>
+</div>
+
+
+<div class="bottom-nav">
+    <div onclick="location.href='/'">🏠<br>홈</div>
+    <div onclick="location.href='/products'"> 🛍<br>상품</div>
+    <!--div onclick="location.href='/cart'">🛒<br>장바구니</div-->
+    <div onclick="location.href='/payment-result'">📃<br>결제내역</div>
+    <div onclick="location.href='/'">👤<br>MY</div>
+</div>
+
+<script th:inline="javascript">
+    function sendCommand(command) {
+        const baseUrl = /*[[${robotBaseUrl}]]*/ "http://oxxultus-bot.kro.kr:8081";
+        const url = baseUrl + '/' + command;
+
+        fetch(url)
+            .then(res => {
+                if (res.ok) {
+                    alert("✅ " + command.toUpperCase() + " 명령 성공");
+                } else {
+                    alert("❌ " + command.toUpperCase() + " 명령 실패\n응답 코드: " + res.status);
+                }
+            })
+            .catch(err => {
+                alert("❌ 네트워크 오류: " + err.message);
+            });
+    }
+</script>
+
+</body>
+</html>

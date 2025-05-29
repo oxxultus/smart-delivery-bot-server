@@ -3,143 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/paymentresult.css" />
-  <title>결제 결과</title>
+  <title>결제 내역</title>
+  <style>
+    body {
+      margin: 0;
+      padding-bottom: 60px;
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      background-color: white;
+    }
+
+    .logo {
+      font-size: 30px;
+      color: #00c4c4;
+      font-weight: bold;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .status-icons div {
+      cursor: pointer;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    h2 {
+      margin: 20px 0 10px;
+      color: #00c4c4;
+    }
+
+    article {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 20px 0;
+      padding: 20px;
+    }
+
+    ul.product-list {
+      list-style: none;
+      padding-left: 20px;
+    }
+
+    .btn {
+      background-color: #00c4c4;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #009b9b;
+    }
+
+    .delete-btn {
+      background-color: #ff4d4d;
+    }
+
+    .delete-btn:hover {
+      background-color: #cc0000;
+    }
+
+    .empty-list {
+      color: #888;
+      text-align: center;
+      font-size: 1.2rem;
+      padding: 40px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+      font-size: 12px;
+    }
+
+    .bottom-nav div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+      cursor: pointer;
+    }
+    .payment-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .payment-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+      padding: 20px;
+    }
+
+    .payment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .unique-number-box {
+      max-width: 70%; /* 상태 뱃지와 겹치지 않게 제한 */
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE 10+ */
+      background-color: #e6f9f9;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .unique-number-box::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+
+    .status-badge {
+      background-color: #00c4c4;
+      color: white;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      margin-bottom: 10px;
+      color: #00c4c4;
+      font-size: 1.1rem;
+    }
+
+    .product-box {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .total-box {
+      margin-top: 20px;
+      padding: 16px;
+      background-color: #f0fefe;
+      border: 1px dashed #00c4c4;
+      border-radius: 10px;
+      font-size: 1.1rem;
+    }
+
+    .total-box .highlight {
+      color: #00c4c4;
+      font-weight: bold;
+    }
+
+    .total-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .payment-footer {
+      margin-top: 20px;
+      text-align: right;
+    }
+
+    .delete-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #cc0000;
+    }
+    .product-box {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
 <body>
 
-<!-- 사이드바 -->
-<aside>
-  <nav>
-    <div id="sidebar_logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="sidebar-logo">
-        <path d="M36.8 192l566.3 0c20.3 0 36.8-16.5 36.8-36.8c0-7.3-2.2-14.4-6.2-20.4L558.2 21.4C549.3 8 534.4 0 518.3 0L121.7 0c-16 0-31 8-39.9 21.4L6.2 134.7c-4 6.1-6.2 13.2-6.2 20.4C0 175.5 16.5 192 36.8 192zM64 224l0 160 0 80c0 26.5 21.5 48 48 48l224 0c26.5 0 48-21.5 48-48l0-80 0-160-64 0 0 160-192 0 0-160-64 0zm448 0l0 256c0 17.7 14.3 32 32 32s32-14.3 32-32l0-256-64 0z"/>
-      </svg>
-      <span>PICK & GO</span>
-    </div>
+<div class="top-bar">
+  <div class="logo">PICK & GO</div>
+  <div class="status-icons">
+    <div onclick="alert('알림 페이지로 이동합니다')">🔔</div>
+    <div onclick="location.href='/cart'">🛒</div>
+  </div>
+</div>
 
-    <!-- 메뉴 -->
-    <ul>
-      <li onclick="window.location.href='/'">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="sidebar-menu-icon">
-            <path d="M547.6 103.8L490.3 13.1C485.2 5 476.1 0 466.4 0L109.6 0C99.9 0 90.8 5 85.7 13.1L28.3 103.8c-29.6 46.8-3.4 111.9 51.9 119.4c4 .5 8.1 .8 12.1 .8c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.1 0 49.3-11.4 65.2-29c15.9 17.6 39.1 29 65.2 29c26.2 0 49.3-11.4 65.2-29c16 17.6 39.1 29 65.2 29c4.1 0 8.1-.3 12.1-.8c55.5-7.4 81.8-72.5 52.1-119.4zM499.7 254.9c0 0 0 0-.1 0c-5.3 .7-10.7 1.1-16.2 1.1c-12.4 0-24.3-1.9-35.4-5.3L448 384l-320 0 0-133.4c-11.2 3.5-23.2 5.4-35.6 5.4c-5.5 0-11-.4-16.3-1.1l-.1 0c-4.1-.6-8.1-1.3-12-2.3L64 384l0 64c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-64 0-131.4c-4 1-8 1.8-12.3 2.3z"/>
-          </svg>
-        </span>홈
-      </li>
-      <li onclick="window.location.href='/products'">
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="sidebar-menu-icon">
-            <path d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"/>
-          </svg>
-        </span>상품목록
-      </li>
-      <li>
-        <span onclick="window.location.href='/'">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="sidebar-menu-icon">
-            <path d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z"/>
-          </svg>
-        </span>카테고리
-      </li>
-      <li onclick="window.location.href='/cart'" >
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="45 0 576 512" class="sidebar-menu-icon" >
-            <path d="M0 24C0 10.7 10.7 0 24 0L69.5 0c22 0 41.5 12.8 50.6 32l411 0c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3l-288.5 0 5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5L488 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-288.3 0c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5L24 48C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
-          </svg>
-        </span>장바구니
-      </li>
-      <li menu-selected="true" >
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="sidebar-menu-icon" menu-icon-selected="true">
-            <path d="M48 0C21.5 0 0 21.5 0 48L0 368c0 26.5 21.5 48 48 48l16 0c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L48 0zM416 160l50.7 0L544 237.3l0 18.7-128 0 0-96zM112 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm368-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
-          </svg>
-        </span>주문목록
-      </li>
-    </ul>
-    <span class="section-text">
-      개인
-    </span>
-    <ul>
-      <li>
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="-21 0 560 512" class="sidebar-menu-icon">
-           <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
-          </svg>
-        </span>내 정보
-      </li>
-      <li>
-        <span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 560 512" class="sidebar-menu-icon">
-            <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM169.8 165.3c7.9-22.3 29.1-37.3 52.8-37.3l58.3 0c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24l0-13.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1l-58.3 0c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>
-        </svg>
-        </span>문의하기
-      </li>
-    </ul>
-    <ul id="setting">
-      <li>
-          <span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="sidebar-menu-icon">
-              <path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/>
-            </svg>
-          </span>설정
-      </li>
-    </ul>
-  </nav>
-</aside>
-
-<!-- 메인 컨텐츠 -->
 <main>
-  <!-- 상단 헤더 -->
-  <header>
-    <h2>결제 내역</h2>
-  </header>
+  <h2>결제 내역</h2>
 
-  <section th:if="${not #lists.isEmpty(paymentLists)}">
-    <div th:each="payment : ${paymentLists}">
-      <article>
-        <h3><strong>고유 번호:</strong> <span th:text="${payment.uniqueNumber}"></span></h3> <!-- 고유 번호 -->
-        <h2 class="hidden-data">결제 ID: <span th:text="${payment.id}"></span></h2> <!-- 결제 ID -->
-        <p><strong>결제 상태:</strong> <span th:text="${payment.paymentStatus}"></span></p> <!-- 결제 상태 -->
-        <h4>상품 내역</h4>
-        <ul class="product-list" >
-          <li th:each="cartItem : ${payment.paymentItems}">
-            <p><strong>상품명:</strong> <span th:text="${cartItem.item.name}"></span></p> <!-- 상품명 -->
-            <p><strong>수량:</strong> <span th:text="${cartItem.quantity}"></span>개</p> <!-- 수량 -->
-            <p><strong>금액:</strong> <span th:text="${#numbers.formatInteger(cartItem.totalPrice, 0, 'COMMA')} + '원'"></span></p> <!-- 총 금액 -->
-          </li>
-        </ul>
-        <p><strong>결제 금액:</strong> <span th:text="${#numbers.formatInteger(payment.totalAmount, 0, 'COMMA')} + '원'"></span></p> <!-- 총 금액 -->
-        <button class="btn delete-btn" th:attr="onclick='deletePayment(\'' + ${payment.uniqueNumber} + '\')'">결제 취소</button>
-      </article>
+  <section th:if="${not #lists.isEmpty(paymentLists)}" class="payment-section">
+    <div th:each="payment : ${paymentLists}" class="payment-card">
+
+      <div class="payment-header">
+        <div class="unique-number-box">
+          <strong class="highlight" th:text="${payment.uniqueNumber}"></strong>
+        </div>
+        <span class="status-badge" th:text="${payment.paymentStatus}"></span>
+      </div>
+
+      <div class="payment-body">
+        <h4 class="section-title">🛍 상품 내역</h4>
+        <div class="product-list">
+          <div th:each="cartItem : ${payment.paymentItems}" class="product-box">
+            <p><strong>상품명:</strong> <span th:text="${cartItem.item.name}"></span></p>
+            <p><strong>수량:</strong> <span th:text="${cartItem.quantity}"></span>개</p>
+            <p><strong>금액:</strong> <span th:text="${#numbers.formatInteger(cartItem.totalPrice, 0, 'COMMA')} + '원'"></span></p>
+          </div>
+        </div>
+
+        <div class="total-box">
+          <div class="total-content">
+            <p><strong>💳 총 결제 금액:</strong>
+              <span class="highlight" th:text="${#numbers.formatInteger(payment.totalAmount, 0, 'COMMA')} + '원'"></span>
+            </p>
+            <button class="btn delete-btn" th:attr="onclick='deletePayment(\'' + ${payment.uniqueNumber} + '\')'">결제 취소</button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
   <section th:if="${#lists.isEmpty(paymentLists)}">
-    <p style="color:white; text-align:center" class="empty-list">결제 내역이 없습니다.</p>
+    <p class="empty-list">결제 내역이 없습니다.</p>
   </section>
 </main>
 
+<div class="bottom-nav">
+  <div onclick="location.href='/'">🏠<br>홈</div>
+  <div onclick="location.href='/products'">🛍<br>상품</div>
+  <!--div onclick="location.href='/cart'">🛒<br>장바구니</div-->
+  <div onclick="location.href='/payment-result'">📃<br>결제내역</div>
+  <div onclick="location.href='/'">👤<br>MY</div>
+</div>
+
 <script>
   function deletePayment(paymentUniqueNumber) {
-    if (!confirm('정말로 이 결제를 삭제하시겠습니까?')) {
-      return;
-    }
+    if (!confirm('정말로 이 결제를 삭제하시겠습니까?')) return;
 
     fetch('/deletePayment', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ paymentUniqueNumber: paymentUniqueNumber })  // 인코딩 없이 전송
+      body: JSON.stringify({ paymentUniqueNumber: paymentUniqueNumber })
     })
             .then(response => response.json())
             .then(data => {
-              if (data.code === 200) { // 서버에서 반환한 HTTP 상태 코드 확인
-                alert(data.message); // 서버의 메시지 출력
-                location.reload(); // 페이지 새로고침
+              if (data.code === 200) {
+                alert(data.message);
+                location.reload();
               } else {
-                alert('결제 삭제 중 오류가 발생했습니다: ' + data.message);
+                alert('결제 삭제 중 오류: ' + data.message);
               }
             })
             .catch(error => {

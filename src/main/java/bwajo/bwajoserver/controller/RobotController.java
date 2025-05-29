@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -36,7 +38,7 @@ public class RobotController {
         // 아두이노가 결제 내역을 GET으로 요청할 때 응답
         @GetMapping("/bot/payment")
         public void getPaymentData(HttpServletResponse response) throws IOException {
-            System.out.println("[서버] 최신 결제 내역 요청받음");
+            // System.out.println("[서버] 최신 결제 내역 요청받음");
 
             List<PaymentList> paymentLists = paymentService.findAllPaymentsList().stream()
                     .filter(p -> p.getPaymentStatus() == PaymentStatus.PAYMENT_SUCCESS)
@@ -49,8 +51,9 @@ public class RobotController {
             }
 
             paymentList = paymentLists.getFirst();
-            String paymentId = paymentList.getUniqueNumber();
+            System.out.println("[서버][결제내역 갱신] 결제내역 갱신 완료");
 
+            String paymentId = paymentList.getUniqueNumber();
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode root = mapper.createObjectNode();
             root.put("paymentId", paymentId);
@@ -75,33 +78,69 @@ public class RobotController {
         }
 
         // 결제내역 불러온것이 있다면 해당 결제내역을 바탕으로 작업 목록에 결제내역 추가
-        @PostMapping("/bot/set-working-list")
+        @GetMapping("/bot/first-set-working-list")
         public ResponseEntity<String> setWorkingList() {
             if (paymentList == null) {
+                System.out.println("[서버][작업 리스트 생성] paymentList가 존재하지 않습니다.");
                 return ResponseEntity.status(400).body("현재 paymentList가 설정되어 있지 않습니다.");
             }
 
-            // 변환: PaymentList → List<WorkingPaymnetListItem>
-            List<WorkingPaymnetListItem> workingItems = new ArrayList<>();
-            for (PaymentItem item : paymentList.getPaymentItems()) {
-                workingItems.add(new WorkingPaymnetListItem(
-                        item.getItem().getUniqueValue(),
-                        item.getItem().getName(),
-                        (long) item.getQuantity()
-                ));
-            }
-
-            // WorkingPaymentList 생성 및 저장
+            // WorkingPaymentList를 빈 리스트로 생성
             workingPaymentList = new WorkingPaymentList(
                     paymentList.getId(),
                     paymentList.getUniqueNumber(),
                     paymentList.getPaymentStatus(),
                     paymentList.getUser(),
-                    workingItems
+                    new ArrayList<>()  // 빈 작업 리스트
             );
 
-            System.out.println("[서버] workingPaymentList 저장 완료: " + workingPaymentList.getUniqueNumber());
-            return ResponseEntity.ok("작업 리스트 저장 완료");
+            System.out.println("[서버][작업 리스트 생성] 초기 작업 리스트 생성 완료: " + workingPaymentList.getUniqueNumber());
+            return ResponseEntity.ok("초기 작업 리스트 생성 완료");
+        }
+
+        @GetMapping("/bot/add-working-list")
+        public ResponseEntity<String> addWorkingItem(@RequestParam String uid) {
+            // System.out.println("[서버] 작업목록 추가 요청 받음: " + uid);
+
+            if (workingPaymentList == null) {
+                System.out.println("[서버][작업 목록 추가] 작업 리스트가 먼저 설정되지 않았습니다.");
+                return ResponseEntity.status(400).body("작업 리스트가 먼저 설정되지 않았습니다.");
+            }
+
+            if (paymentList == null) {
+                System.out.println("[서버][작업 목록 추가] paymentList가 존재하지 않습니다.");
+                return ResponseEntity.status(400).body("paymentList가 존재하지 않습니다.");
+            }
+
+            // 중복 UID 확인
+            boolean alreadyExists = workingPaymentList.getWorkingPaymnetListItem().stream()
+                    .anyMatch(item -> item.getUid().equals(uid));
+            if (alreadyExists) {
+                System.out.println("[서버][작업 목록 추가] 이미 해당 UID가 작업 목록에 등록되어 있습니다.");
+                return ResponseEntity.status(409).body("이미 해당 UID가 작업 목록에 등록되어 있습니다.");
+            }
+
+            // UID로 paymentList에서 항목 탐색
+            Optional<PaymentItem> match = paymentList.getPaymentItems().stream()
+                    .filter(item -> item.getItem().getUniqueValue().equals(uid))
+                    .findFirst();
+
+            if (match.isEmpty()) {
+                System.out.println("[서버][작업 목록 추가] 해당 UID에 해당하는 상품을 찾을 수 없습니다.");
+                return ResponseEntity.status(404).body("해당 UID에 해당하는 상품을 찾을 수 없습니다.");
+            }
+
+            // 항목 이름과 수량 추출
+            String itemName = match.get().getItem().getName();
+            Long itemCount = (long) match.get().getQuantity();
+
+            // 생성자 사용해 객체 생성 및 추가
+            WorkingPaymnetListItem newItem = new WorkingPaymnetListItem(uid, itemName, itemCount);
+            workingPaymentList.getWorkingPaymnetListItem().add(newItem);
+
+            System.out.println("[서버][작업 목록 추가] 작업 항목 추가됨: " + uid);
+
+            return ResponseEntity.ok("작업 항목이 성공적으로 추가되었습니다.");
         }
 
         @GetMapping("/bot/reset-working-list")
@@ -125,7 +164,7 @@ public class RobotController {
             // 상태 변경 후 작업 리스트 초기화
             workingPaymentList = null;
 
-            System.out.println("[서버] " + uniqueNumber + " 상태를 DELIVERY_COMPLETE로 변경하고 작업 리스트를 초기화했습니다.");
+            System.out.println("[서버][작업목록 재설정] 결제내역 " + uniqueNumber + "의 상태를 DELIVERY_COMPLETE로 변경하고 작업 리스트를 초기화했습니다.");
             return ResponseEntity.ok("결제 상태를 완료로 변경하고 작업 리스트를 초기화했습니다.");
         }
 
@@ -133,9 +172,13 @@ public class RobotController {
         // 진열대 ============================================================================================================
         // 요청 방식: GET /end/working-list?uid=e3221014 같은 형식으로 요청
 
+            //532eb318 : 2번
+            //c3a4e195 : 1번
+
         // 진열대의 작업량 할당
         @GetMapping("/check/working-list")
         public void checkWorkingList(@RequestParam String uid, HttpServletResponse response) throws IOException {
+
             if (workingPaymentList == null) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 return;
@@ -150,8 +193,10 @@ public class RobotController {
 
             if (match.isPresent()) {
                 json.put("count", match.get().getCount());
+                System.out.println("[서버][진열대 작업량 할당] 요청 진열대 UID: " + uid + " 의 값 " + match.get().getCount() + " 전달 완료.");
             } else {
                 json.put("count", 0);
+                System.out.println("[서버][진열대 작업량 할당] 요청 진열대 UID: " + uid + " 에 해당하는 작업이 없어 수량 0 을 전달 합니다");
             }
 
             byte[] jsonBytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(json);
@@ -175,14 +220,55 @@ public class RobotController {
                 return ResponseEntity.status(404).body("해당 UID를 가진 항목이 없습니다.");
             }
 
+            // 상태를 '완료'로 변경
             match.get().setStatus("완료");
+            System.out.println("[서버][진열대 작업완료] UID " + uid + " 작업 상태를 '완료'로 변경했습니다.");
 
-            System.out.println("[서버] UID " + uid + " 상태를 '완료'로 변경했습니다.");
+            /* 모든 항목이 완료되었는지 확인
+            boolean allCompleted = workingPaymentList.getWorkingPaymnetListItem().stream()
+                    .allMatch(item -> "완료".equals(item.getStatus()));
 
-            // TODO: 로봇에게 다시 작동명령 혹은 선반에서 작동명령
+            if (allCompleted) {
+                workingPaymentList.setPaymentStatus(PaymentStatus.DELIVERY_COMPLETE);
+                System.out.println("[서버] 모든 항목 완료됨 → 상태를 DELIVERY_COMPLETE로 변경");
+            }*/
+
+            printWorkingPaymentList();
 
             return ResponseEntity.ok(uid + "에 해당하는 상품이 완료 상태로 변경되었습니다.");
         }
 
+        // 작업 내역 출력
+        public static void printWorkingPaymentList() {
+            if (workingPaymentList == null) {
+                System.out.println("[디버그] 현재 workingPaymentList가 null입니다.");
+                return;
+            }
 
+            System.out.println("=== [작업 리스트 상태 출력] ===");
+            System.out.println("결제 ID: " + workingPaymentList.getId());
+            System.out.println("고유 번호: " + workingPaymentList.getUniqueNumber());
+            System.out.println("결제 상태: " + workingPaymentList.getPaymentStatus());
+            System.out.println("사용자: " + workingPaymentList.getUser().getId());
+
+            System.out.println("→ 작업 항목 목록:");
+            for (WorkingPaymnetListItem item : workingPaymentList.getWorkingPaymnetListItem()) {
+                System.out.println(" - UID: " + item.getUid() +
+                        ", 이름: " + item.getName() +
+                        ", 수량: " + item.getCount() +
+                        ", 상태: " + item.getStatus());
+            }
+            System.out.println("=== [작업 리스트 끝] ===");
+        }
+
+
+        // TEST ========================================================================================================
+
+        @GetMapping("/clear-memory-data")
+        public ResponseEntity<String> clear() {
+            workingPaymentList = null;
+            paymentList = null;
+            System.out.println("[서버][초기화] 결제내역 및 작업공간 초기화 완료");
+            return ResponseEntity.status(200).body("결제내역 및 작업공간 초기화 완료");
+        }
 }
