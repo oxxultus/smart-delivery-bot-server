@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -207,6 +209,7 @@ public class RobotController {
 
         // 진열대의 1회 작업 종료
         @GetMapping("/end/working-list")
+        @GetMapping("/end/working-list")
         public ResponseEntity<String> endWorkingItem(@RequestParam String uid) {
             if (workingPaymentList == null) {
                 return ResponseEntity.status(400).body("작업 리스트가 존재하지 않습니다.");
@@ -224,16 +227,29 @@ public class RobotController {
             match.get().setStatus("완료");
             System.out.println("[서버][진열대 작업완료] UID " + uid + " 작업 상태를 '완료'로 변경했습니다.");
 
-            /* 모든 항목이 완료되었는지 확인
+            // 모든 항목 완료 시 처리 로직 (선택사항)
+            /*
             boolean allCompleted = workingPaymentList.getWorkingPaymnetListItem().stream()
                     .allMatch(item -> "완료".equals(item.getStatus()));
 
             if (allCompleted) {
                 workingPaymentList.setPaymentStatus(PaymentStatus.DELIVERY_COMPLETE);
                 System.out.println("[서버] 모든 항목 완료됨 → 상태를 DELIVERY_COMPLETE로 변경");
-            }*/
+            }
+            */
 
             printWorkingPaymentList();
+
+            // 로봇에게 다시 작동 명령 전달
+            try {
+                String robotUrl = UriComponentsBuilder.fromHttpUrl("http://oxxultus-bot.kro.kr:8081/go")
+                        .toUriString();
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getForEntity(robotUrl, String.class);
+                System.out.println("[서버 → 로봇] /go 명령 전송 완료");
+            } catch (Exception e) {
+                System.err.println("[서버 → 로봇] /go 명령 전송 실패: " + e.getMessage());
+            }
 
             return ResponseEntity.ok(uid + "에 해당하는 상품이 완료 상태로 변경되었습니다.");
         }
